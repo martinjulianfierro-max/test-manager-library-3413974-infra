@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: library-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-library}
+      POSTGRES_USER: ${DB_USERNAME:-library}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-library}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - library-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-library} -d ${DB_DATABASE:-library}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ../test-manager-library-3413974-api
+      dockerfile: Dockerfile
+    container_name: library-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: ${DB_DATABASE:-library}
+      DB_USERNAME: ${DB_USERNAME:-library}
+      DB_PASSWORD: ${DB_PASSWORD:-library}
+      CORS_ORIGIN: http://localhost:5173
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../test-manager-library-3413974-api:/var/www/html
+    networks:
+      - library-network
+    profiles:
+      - full
+
+  app:
+    build:
+      context: ../test-manager-library-3413974-app
+      dockerfile: Dockerfile
+    container_name: library-app
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../test-manager-library-3413974-app:/app
+      - /app/node_modules
+    networks:
+      - library-network
+    profiles:
+      - full
+
+networks:
+  library-network:
+    name: library-network
+    driver: bridge
+
+volumes:
+  db_data:
+    name: library-db-data

@@ -3,9 +3,33 @@
 > **Prueba técnica · Ficha ADSO 3413974**
 > Horario: de **9:15 a. m. a 3:00 p. m.** (15:00). Después, **feria de presentación** de cada proyecto.
 
-Este repositorio es la **infraestructura** de *Manager Library*: contenedores, red, volúmenes y el motor de base de datos vacío. **Empieza vacío a propósito**: se construye en el fork de cada aprendiz.
+Este repositorio es la **infraestructura** de *Manager Library*: contenedores, red, volúmenes y el motor de base de datos vacío.
 
-## Instrucciones
+## Ejecución con Docker
+
+### 1. Iniciar la base de datos vacía (para desarrollo de la API)
+```bash
+docker compose up -d db
+```
+El motor arranca en el puerto `5432` con la base de datos `library` creada y sin tablas (cumpliendo el **Artículo V de la Constitución**).
+
+### 2. Verificar el estado del motor
+```bash
+docker compose ps
+```
+
+### 3. Detener los contenedores
+```bash
+docker compose down
+```
+
+### 4. Orquestación completa (T-20)
+Cuando la API (`api`) y el frontend (`app`) estén construidos, se levanta todo el ecosistema con:
+```bash
+docker compose --profile full up -d
+```
+
+## Instrucciones del reto
 
 Cada aprendiz debe **crear el fork** de los seis repositorios del proyecto y **resolver el proyecto
 con el spec planteado**.
