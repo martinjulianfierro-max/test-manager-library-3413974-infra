@@ -44,8 +44,6 @@ services:
       - ../test-manager-library-3413974-api:/var/www/html
     networks:
       - library-network
-    profiles:
-      - full
 
   app:
     build:
@@ -62,8 +60,6 @@ services:
       - /app/node_modules
     networks:
       - library-network
-    profiles:
-      - full
 
 networks:
   library-network:

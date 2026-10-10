@@ -24,9 +24,9 @@ docker compose down
 ```
 
 ### 4. Orquestación completa (T-20)
-Cuando la API (`api`) y el frontend (`app`) estén construidos, se levanta todo el ecosistema con:
+Cuando la API (`api`) y el frontend (`app`) estén construidos, se levanta todo el ecosistema con un solo comando:
 ```bash
-docker compose --profile full up -d
+docker compose up -d
 ```
 
 ## Instrucciones del reto
